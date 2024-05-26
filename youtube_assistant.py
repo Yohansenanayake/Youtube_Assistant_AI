@@ -8,6 +8,7 @@ from langchain_community.vectorstores  import FAISS
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.embeddings import JinaEmbeddings
 from langchain_ai21 import AI21SemanticTextSplitter
+import youtube_transcript as yt
 
 
 load_dotenv()
@@ -20,9 +21,12 @@ embeddings = JinaEmbeddings(
 )
 
 def create_vector_db_from_youtube(url) -> FAISS:
-    loader = YoutubeLoader.from_youtube_url(url)
-    transcript = loader.load()
-    text = transcript[0].page_content
+
+#    loader = YoutubeLoader.from_youtube_url(url)
+#    transcript = loader.load()
+#    text = transcript[0].page_content
+
+    text = yt.youtube_transcript_from_url(url)
 
     #text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000,o)
     semantic_text_splitter = AI21SemanticTextSplitter(chunk_size=1000,chunk_overlap=100)
@@ -34,10 +38,6 @@ def create_vector_db_from_youtube(url) -> FAISS:
     return db
     
     
-
-
-
-
 def youtube_assistant(user_input,db,k=4):
 
     docs = db.similarity_search(user_input,k=k)
@@ -54,11 +54,12 @@ def youtube_assistant(user_input,db,k=4):
                 By searching the following transcript: {transcript}
                 Only use the factual information from the transcript to answer the question.
                 If you feel like you don't have enough information to answer,say "I don't have enough information to answer this question" 
-                your answer should be detailed and informative.
+                your answer should be detailed and informative. First give a short answer using 2-3 sentences, then provide more details and explanations.
+                Always refer to the video's transcript when answering questions.
                 
             """
     chat_template = ChatPromptTemplate.from_messages([("system", system)])
-    #prompt = chat_template.format_messages(question =user_input, transcript = similarity_doc)
+    
 
     chain = chat_template | llm
     response = chain.invoke(
@@ -67,7 +68,7 @@ def youtube_assistant(user_input,db,k=4):
     )
 
     return response.content
-    #return response.content
+    
     
 
 
