@@ -5,3 +5,8 @@
 ### Hosted on GROQ cloud 
 ### Langchain
 ### Streamlit for UI
+## What you need
+### Gropq API key
+### AI21 API key
+### Jina API key
+### Set API keys in a .env file and load it
