@@ -17,7 +17,7 @@ load_dotenv()
 
 #embeddings = OpenAIEmbeddings()
 embeddings = JinaEmbeddings(
-    jina_api_key="jina_82207cdb72b4418d9ed50e0d0a5b6404DG-DpT8WejhqlS0vijOzpFzX2klD", model_name="jina-embeddings-v2-base-en"
+     model_name="jina-embeddings-v2-base-en"
 )
 
 def create_vector_db_from_youtube(url) -> FAISS:
